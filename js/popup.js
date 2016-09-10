@@ -18,11 +18,9 @@ function getAllTabs() {
     tabLists.forEach(function(val) {
       $('#tabList').append(
         "<tr>" +
-        "<th>" + val.title + "</th>" +
-        "<th><button class='btn btn-info tabOpen' data-id='" + val.id + "'>" +
-        "<i class='fa fa-play'></i>" + "</button></th>" +
+        "<th class='tabOpen' data-id='" + val.id + "'>" + val.title + "</th>" +
         "<th><button class='btn btn-danger tabDelete' data-id='" + val.id + "'>" +
-        "<i class='fa fa-trash-o'></i>" + "</button></th>" +
+        "x" + "</button></th>" +
         "</tr>"
       );
     });
