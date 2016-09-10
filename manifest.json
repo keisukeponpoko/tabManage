@@ -1,0 +1,19 @@
+{
+  "name": "タブ削除ツール",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "タブの削除が簡単にできます。",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "tabs"
+  ],
+  "browser_action": {
+    "default_icon": "icons/icon16.png",
+    "default_title": "タブ削除",
+    "default_popup": "popup.html"
+  }
+}
