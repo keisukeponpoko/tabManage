@@ -1,8 +1,6 @@
 $(function() {
-  getAllTabs();
-});
-
-function getAllTabs() {
+  var OldInput = '';
+  var input = '';
   chrome.tabs.getAllInWindow(null, function(tabs) {
     var tabLists = Array();
     // 現在開いているタブを配列にpush
@@ -45,72 +43,43 @@ function getAllTabs() {
     });
 
     // 表示タブ切り替え処理
-    $("#suggestList").on('click', ".suggestOpen", function() {
-      chrome.tabs.update($(this).data("id"), {active: true});
-    });
-
-    // 表示タブ切り替え処理
-    $("#historyList").on('click', ".historyOpen", function() {
+    $("#suggestList").on('click', ".historyOpen", function() {
       chrome.tabs.create({url:$(this).data("url")});
     });
 
     // 履歴取得
     $("#history").on('click', function() {
       $("#historySearch").show();
-      $("#tabSearch").hide();
+      $("#suggestSearch").hide();
       setSearchHistory('', null, null, 50);
     });
 
-    $("#historyTextSubmit").on('click', function() {
-      var text = $("#historyText").val();
-      $('#historyList').html("");
-      var microsecondsStartBack = 1000 * 60 * 60 * 24 * 365;
-      var startTime = (new Date).getTime() - microsecondsStartBack;
-      var maxResults = Number($("#maxResults").val());
-      setSearchHistory(text, startTime, null, maxResults);
-    });
-
-    $("#historyDateSubmit").on('click', function() {
+    // 履歴の詳細検索
+    $("#historySubmit").on('click', function() {
+      var historyText = $("#historyText").val();
       var endDay = $("#endDay").val();
       var microsecondsStartBack = 1000 * 60 * 60 * 24 * (endDay + 10);
       var microsecondsEndBack = 1000 * 60 * 60 * 24 * endDay;
       var startTime = (new Date).getTime() - microsecondsStartBack;
       var endTime = (new Date).getTime() - microsecondsEndBack;
-      $('#historyList').html("");
-
       var maxResults = Number($("#maxResults").val());
-      setSearchHistory('', startTime, endTime, maxResults);
+      setSearchHistory(historyText, startTime, endTime, maxResults);
     });
 
-    //　検索
+    //　履歴の同期検索
     $("#search").keyup(function() {
-      var text = $(this).val();
-      $("#suggestList").html("");
-      var suggestList = Array();
-      tabLists.map(function(element) {
-        if (element.title.indexOf(text) != -1) {
-          suggestList.push({
-            id : element.id,
-            title : element.title,
-            url : element.url
-          });
-        } else if (element.url.indexOf(text) != -1) {
-          suggestList.push({
-            id : element.id,
-            title : element.title,
-            url : element.url
-          });
-        }
-      });
-      suggestList.forEach(function(val) {
-        $('#suggestList').append(
-          "<a href='#' class='suggestOpen list-group-item' data-id='" + val.id + "'>"
-           + val.title + "</a>"
-        );
-      });
+      input = $(this).val();
+      if (input != OldInput) {
+        OldInput = input;
+        console.log('onSearch');
+        // 1年前
+        var microsecondsStartBack = 1000 * 60 * 60 * 24 * 365;
+        var startTime = (new Date).getTime() - microsecondsStartBack;
+        setSearchHistory(input, startTime, null, 20);
+      }
     });
   });
-}
+});
 
 var setSearchHistory = function(inputText, inputStartTime, inputEndTime, inputMaxResults) {
   var query = {
@@ -120,9 +89,9 @@ var setSearchHistory = function(inputText, inputStartTime, inputEndTime, inputMa
     maxResults: inputMaxResults
   }
   chrome.history.search(query, function(result) {
-    console.log(result);
+    $("#suggestList").html("");
     if (result.length == 0) {
-      $('#historyList').append(
+      $('#suggestList').append(
         "<span class='list-group-item'>検索結果がありません</span>"
        )
     } else {
@@ -132,9 +101,9 @@ var setSearchHistory = function(inputText, inputStartTime, inputEndTime, inputMa
         } else {
           title = val.title;
         }
-        $('#historyList').append(
+        $('#suggestList').append(
           "<a href='#' class='historyOpen list-group-item' data-url='" + val.url + "'>"
-           + mb_strimwidth(title, 0, 60, '...') + "</li>"
+           + mb_strimwidth(title, 0, 70, '...') + "</li>"
          )
       });
     }

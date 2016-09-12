@@ -7,32 +7,37 @@
 </head>
 <body>
   <div class="container">
-    <div id="tabSearch">
-      <input type="text" id="search" class="form-control" placeholder="現在開いているタブ検索">
-      <div class="list-group" id="suggestList"></div>
-    </div>
-    <div id="historySearch" class="form-group">
-      <label>履歴検索(テキストあるいは、何日前に開いたかで履歴を検索できます)</label>
-      <div class="form-inline">
-          <input type="text" id="historyText" value="" class="form-control" placeholder="検索文字列">
-          <button class='btn btn-primary' id='historyTextSubmit'>検索</button>&nbsp;&nbsp;
-          <input type="number" id="endDay" value="7" class="form-control">日前
-          <button class='btn btn-primary' id='historyDateSubmit'>検索</button>&nbsp;&nbsp;&nbsp;
-          検索数<input type="number" id="maxResults" value="50" class="form-control" placeholder="件数">件
+    <div id="suggestSearch">
+      <div class="row">
+        <div class="col-xs-10">
+          <input type="text" id="search" class="form-control" placeholder="履歴を検索">
+        </div>
+        <div class="col-xs-1">
+          <button class='btn btn-info' id='history'>詳細</button>
+        </div>
       </div>
     </div>
-    <div class="list-group" id="historyList">
+    <div id="historySearch" class="form-group">
+      <label>タイトル、URLあるいは、何日前に開いたかで履歴を検索できます</label>
+      <div class="form-inline">
+        <input type="text" id="historyText" value="" class="form-control" placeholder="検索文字列">&nbsp;&nbsp;
+        <input type="number" id="endDay" value="30" class="form-control">日前&nbsp;&nbsp;
+        <input type="number" id="maxResults" value="50" class="form-control" placeholder="件数">件&nbsp;&nbsp;
+        <button class='btn btn-primary' id='historySubmit'>検索</button>
+      </div>
     </div>
+    <div class="list-group" id="suggestList"></div>
     <table class="table">
       <thead>
         <tr>
           <th>タブ一覧</th>
-          <th><button class='btn btn-info' id='history'>履歴</button></th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="tabList">
       </tbody>
     </table>
+    <p>注) Javascript APIが25,000回/日らしいので、超えると使えないかもです</p>
   </div>
 </body>
 <script src="js/jquery-3.1.0.slim.min.js"></script>

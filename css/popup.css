@@ -21,17 +21,17 @@ html {
 }
 
 #historyText {
-  width: 200px;
+  width: 230px;
   display: inline;
 }
 
 #endDay {
-  width: 70px;
+  width: 100px;
   display: inline;
 }
 
 #maxResults {
-  width: 70px;
+  width: 100px;
   display: inline;
 }
 
