@@ -14,6 +14,8 @@ function getAllTabs() {
       });
     });
 
+    tabLists.reverse();
+
     // タブ一覧情報をHTMLにくっつける
     tabLists.forEach(function(val) {
       $('#tabList').append(
