@@ -15,3 +15,7 @@
 th .btn {
   padding: 2px 10px;
 }
+
+html {
+  height: 500px
+}
