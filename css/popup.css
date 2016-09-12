@@ -19,3 +19,22 @@ th .btn {
 html {
   height: 500px
 }
+
+#historyText {
+  width: 200px;
+  display: inline;
+}
+
+#endDay {
+  width: 70px;
+  display: inline;
+}
+
+#maxResults {
+  width: 70px;
+  display: inline;
+}
+
+#historySearch {
+  display: none;
+}

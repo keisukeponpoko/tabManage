@@ -5,7 +5,6 @@ $(function() {
 function getAllTabs() {
   chrome.tabs.getAllInWindow(null, function(tabs) {
     var tabLists = Array();
-    console.log(tabs);
     // 現在開いているタブを配列にpush
     tabs.forEach(function(val) {
       tabLists.push({
@@ -50,6 +49,39 @@ function getAllTabs() {
       chrome.tabs.update($(this).data("id"), {active: true});
     });
 
+    // 表示タブ切り替え処理
+    $("#historyList").on('click', ".historyOpen", function() {
+      chrome.tabs.create({url:$(this).data("url")});
+    });
+
+    // 履歴取得
+    $("#history").on('click', function() {
+      $("#historySearch").show();
+      $("#tabSearch").hide();
+      setSearchHistory('', null, null, 50);
+    });
+
+    $("#historyTextSubmit").on('click', function() {
+      var text = $("#historyText").val();
+      $('#historyList').html("");
+      var microsecondsStartBack = 1000 * 60 * 60 * 24 * 365;
+      var startTime = (new Date).getTime() - microsecondsStartBack;
+      var maxResults = Number($("#maxResults").val());
+      setSearchHistory(text, startTime, null, maxResults);
+    });
+
+    $("#historyDateSubmit").on('click', function() {
+      var endDay = $("#endDay").val();
+      var microsecondsStartBack = 1000 * 60 * 60 * 24 * (endDay + 10);
+      var microsecondsEndBack = 1000 * 60 * 60 * 24 * endDay;
+      var startTime = (new Date).getTime() - microsecondsStartBack;
+      var endTime = (new Date).getTime() - microsecondsEndBack;
+      $('#historyList').html("");
+
+      var maxResults = Number($("#maxResults").val());
+      setSearchHistory('', startTime, endTime, maxResults);
+    });
+
     //　検索
     $("#search").keyup(function() {
       var text = $(this).val();
@@ -73,10 +105,39 @@ function getAllTabs() {
       suggestList.forEach(function(val) {
         $('#suggestList').append(
           "<a href='#' class='suggestOpen list-group-item' data-id='" + val.id + "'>"
-           + val.title + "</li>"
+           + val.title + "</a>"
         );
       });
     });
+  });
+}
+
+var setSearchHistory = function(inputText, inputStartTime, inputEndTime, inputMaxResults) {
+  var query = {
+    text: inputText,
+    startTime: inputStartTime,
+    endTime: inputEndTime,
+    maxResults: inputMaxResults
+  }
+  chrome.history.search(query, function(result) {
+    console.log(result);
+    if (result.length == 0) {
+      $('#historyList').append(
+        "<span class='list-group-item'>検索結果がありません</span>"
+       )
+    } else {
+      result.forEach(function(val) {
+        if (val.title == '') {
+          title = val.url;
+        } else {
+          title = val.title;
+        }
+        $('#historyList').append(
+          "<a href='#' class='historyOpen list-group-item' data-url='" + val.url + "'>"
+           + mb_strimwidth(title, 0, 60, '...') + "</li>"
+         )
+      });
+    }
   });
 }
 
